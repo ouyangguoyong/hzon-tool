@@ -1,1 +1,2 @@
-from feapder.utils.tools import *
+from tools import *
+from perfect_dict import *

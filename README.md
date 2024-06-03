@@ -19,4 +19,36 @@ pip install hzon_tools
 
 https://pypi.org/project/hzon-tools/
 
-https://github.com/cornradio/dumb_menu (I want stars ⭐ uwu)
+https://github.com/ouyangguoyong/hzon-tool (I want stars ⭐ uwu)
+
+
+## Usage
+
+example:
+
+```python
+from hzon_tools import get_computer_name
+
+computer_name = get_computer_name()
+
+```
+
+
+## Update log
+
+
+`0.0.1` 创建项目
+
+## how to upload a new version (for me)
+
+en: https://packaging.python.org/tutorials/packaging-projects/ 
+
+zh: https://python-packaging-zh.readthedocs.io/zh_CN/latest/minimal.html#id2
+
+> make sure have twine installed first
+
+1. change `setup.py`
+2. testing `python3 setup.py develop`
+3. `python3 setup.py sdist`
+4. `twine upload dist/*`
+

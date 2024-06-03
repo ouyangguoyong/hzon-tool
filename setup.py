@@ -2,7 +2,7 @@ import codecs
 import os
 
 from setuptools import find_packages, setup
-
+from feapder.utils import tools
 # these things are needed for the README.md show on pypi
 here = os.path.abspath(os.path.dirname(__file__))
 
