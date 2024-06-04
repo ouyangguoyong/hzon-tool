@@ -1,24 +1,21 @@
-import hashlib
+import base64
 import io
 import os
 import uuid
+import time
+import socket
 
+import hashlib
+import requests
 import openpyxl
 import datetime
-import datetime
-import socket
-import requests
-import time
-
 from datetime import datetime as dt
-
-import requests
 
 """
 connect = pymysql.connect(
     host=glv['mysql_config'].get('host'),
     port=3306,
-    db='operating-management',
+    db='db_name',
     user=glv['mysql_config'].get('user'),
     passwd=glv['mysql_config'].get('passwd'),
     charset='utf8',
@@ -55,6 +52,7 @@ def save_data(self,lis):
         self.connect.rollback()
         print("插入失败")
 """
+
 
 def get_yesterday():
     """
@@ -186,7 +184,7 @@ def get_need_spider_date(_date_list):
     return sorted(r, reverse=False)
 
 
-def get_cur_start_end_date(self):
+def get_cur_start_end_date():
     """
     获取今天的开始时间戳和结束时间戳,长度要求为13位
     :return:
@@ -195,6 +193,7 @@ def get_cur_start_end_date(self):
     today_start = int(time.mktime(time.strptime(str(today - datetime.timedelta(days=1)), '%Y-%m-%d'))) * 1000
     today_end = today_start + 86400000 - 1
     return str(today_start), str(today_end)
+
 
 def timestamp_to_str(timestamp):
     """
@@ -299,7 +298,8 @@ def get_random_file_name():
     uid = uuid.uuid4()
     return str(uid)
 
-def md5_encode(self, string):
+
+def md5_encode(string):
     """
     md5加密
     :param string:
@@ -308,3 +308,33 @@ def md5_encode(self, string):
     md5 = hashlib.md5()
     md5.update(string.encode('utf-8'))
     return md5.hexdigest()
+
+
+# 生成base64编码的方法
+def base64_encode(string):
+    """
+    对输入字符串进行Base64编码并返回编码后的字符串。
+
+    Args:
+        string (str): 待编码的字符串。
+
+    Returns:
+        str: 编码后的Base64字符串。
+
+    """
+    return base64.b64encode(string.encode('utf-8')).decode('utf-8')
+
+
+# 生成base64解码的方法
+def base64_decode(string):
+    """
+    对输入字符串进行Base64解码并返回解码后的字符串。
+
+    Args:
+        string (str): 待解码的Base64字符串。
+
+    Returns:
+        str: 解码后的字符串。
+
+    """
+    return base64.b64decode(string).decode('utf-8')
