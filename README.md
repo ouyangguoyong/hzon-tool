@@ -27,7 +27,7 @@ https://github.com/ouyangguoyong/hzon-tool (I want stars ⭐ uwu)
 example:
 
 ```python
-from hzon_tools.mc import get_random_file_name
+from hzon_tools import get_random_file_name
 
 file_name = get_random_file_name()
 
@@ -35,9 +35,11 @@ file_name = get_random_file_name()
 
 
 ## Update log
-`0.0.3` 完善readme
-`0.0.2` 封装feapder,小菜,和自己的mc包的项目
-`0.0.1` 创建项目
+
+- `0.0.4` 修改包的调用，变得更灵活，可以直接从主包中调用任意一个子包的方法
+- `0.0.3` 完善readme
+- `0.0.2` 封装feapder,小菜,和自己的mc包的项目
+- `0.0.1` 创建项目
 
 ## how to upload a new version (for me)
 
@@ -48,7 +50,7 @@ zh: https://python-packaging-zh.readthedocs.io/zh_CN/latest/minimal.html#id2
 > make sure have twine installed first
 
 1. change `setup.py`
-2. testing `python3 setup.py develop`
+2. testing `python setup.py develop`
 3. `python3 setup.py sdist`
 4. `twine upload dist/*`
 

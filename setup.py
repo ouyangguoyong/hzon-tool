@@ -9,7 +9,7 @@ here = os.path.abspath(os.path.dirname(__file__))
 with codecs.open(os.path.join(here, "README.md"), encoding="utf-8") as fh:
     long_description = "\n" + fh.read()
 
-VERSION = '0.0.3'
+VERSION = '0.0.4'
 DESCRIPTION = '勇哥python工具包'
 LONG_DESCRIPTION = '将一些公共的，第三方的以及自己工作日常，爬虫工作中常用的爬虫开发工具和方法做了一个大集合'
 
