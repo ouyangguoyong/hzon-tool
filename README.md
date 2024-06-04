@@ -27,16 +27,16 @@ https://github.com/ouyangguoyong/hzon-tool (I want stars ⭐ uwu)
 example:
 
 ```python
-from hzon_tools import get_computer_name
+from hzon_tools.mc import get_random_file_name
 
-computer_name = get_computer_name()
+file_name = get_random_file_name()
 
 ```
 
 
 ## Update log
-
-
+`0.0.3` 完善readme
+`0.0.2` 封装feapder,小菜,和自己的mc包的项目
 `0.0.1` 创建项目
 
 ## how to upload a new version (for me)
