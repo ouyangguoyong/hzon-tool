@@ -69,8 +69,11 @@ redisdb = None
 
 
 def get_redisdb():
+    # 声明全局变量redisdb
     global redisdb
+    # 如果redisdb为空
     if not redisdb:
+        # 创建一个RedisDB对象并赋值给redisdb
         redisdb = RedisDB()
     return redisdb
 
@@ -82,8 +85,11 @@ class Singleton(object):
         self._instance = {}
 
     def __call__(self, *args, **kwargs):
+        # 如果self._cls不在self._instance字典中
         if self._cls not in self._instance:
+            # 将self._cls的实例通过调用self._cls(*args, **kwargs)创建，并存储到self._instance字典中
             self._instance[self._cls] = self._cls(*args, **kwargs)
+        # 返回self._cls的实例
         return self._instance[self._cls]
 
 
@@ -96,11 +102,15 @@ class LazyProperty:
         self.func = func
 
     def __get__(self, instance, owner):
+        # 如果实例对象为空，则返回描述符对象本身
         if instance is None:
             return self
         else:
+            # 调用描述符对象的函数，并将实例对象作为参数传入
             value = self.func(instance)
+            # 将函数执行结果赋值给实例对象的属性，属性名为函数名
             setattr(instance, self.func.__name__, value)
+            # 返回函数执行结果
             return value
 
 
@@ -109,10 +119,27 @@ def log_function_time(func):
 
         @functools.wraps(func)  # 将函数的原来属性付给新函数
         def calculate_time(*args, **kw):
+            """
+            计算函数运行时间的装饰器。
+
+            Args:
+                func (callable): 需要计算运行时间的函数。
+                *args: 可变位置参数，传递给func的参数。
+                **kw: 可变关键字参数，传递给func的参数。
+
+            Returns:
+                any: 被装饰的函数func的返回值。
+
+            """
+            # 记录开始时间
             began_time = time.time()
+            # 调用原函数并保存结果
             callfunc = func(*args, **kw)
+            # 记录结束时间
             end_time = time.time()
+            # 输出函数运行时间
             log.debug(func.__name__ + " run time  = " + str(end_time - began_time))
+            # 返回原函数的结果
             return callfunc
 
         return calculate_time
@@ -152,8 +179,11 @@ def memoizemethod_noargs(method):
 
     @functools.wraps(method)
     def new_method(self, *args, **kwargs):
+        # 判断当前对象是否在缓存中
         if self not in cache:
+            # 如果不在缓存中，则调用原方法，并将结果存储到缓存中
             cache[self] = method(self, *args, **kwargs)
+        # 返回缓存中的结果
         return cache[self]
 
     return new_method
@@ -237,7 +267,7 @@ def func_timeout(timeout):
 
     def wapper(func):
         def handle(
-            signum, frame
+                signum, frame
         ):  # 收到信号 SIGALRM 后的回调函数，第一个参数是信号的数字，第二个参数是the interrupted stack frame.
             raise TimeoutError
 
@@ -257,9 +287,25 @@ def func_timeout(timeout):
 
 
 # @log_function_time
-def get_html_by_requests(
-    url, headers=None, code="utf-8", data=None, proxies={}, with_response=False
-):
+def get_html_by_requests(url, headers=None, code="utf-8", data=None, proxies={}, with_response=False):
+    """
+    使用requests库发送HTTP请求，获取指定URL的HTML内容。
+
+    Args:
+        url (str): 请求的URL地址。
+        headers (dict, optional): 请求头信息。默认为None。
+        code (str, optional): 网页编码格式。默认为"utf-8"。
+        data (dict, optional): POST请求时提交的数据。默认为None。
+        proxies (dict, optional): 代理服务器设置。默认为空字典。
+        with_response (bool, optional): 是否返回Response对象。默认为False。
+
+    Returns:
+        str: 返回指定URL的HTML内容，若`with_response`为True，则返回元组(html, response)。
+
+    Raises:
+        无。
+
+    """
     html = ""
     r = None
     try:
@@ -285,15 +331,26 @@ def get_html_by_requests(
         return html
 
 
-def get_json_by_requests(
-    url,
-    params=None,
-    headers=None,
-    data=None,
-    proxies={},
-    with_response=False,
-    cookies=None,
-):
+def get_json_by_requests(url,params=None,headers=None,data=None,proxies={},with_response=False,cookies=None):
+    """
+    使用requests库发送HTTP请求，获取指定URL的JSON数据。
+
+    Args:
+        url (str): 请求的URL地址。
+        params (dict, optional): GET请求时附带的参数。默认为None。
+        headers (dict, optional): 请求头信息。默认为None。
+        data (dict, optional): POST请求时提交的数据。默认为None。
+        proxies (dict, optional): 代理服务器设置。默认为空字典。
+        with_response (bool, optional): 是否返回Response对象。默认为False。
+        cookies (dict, optional): 请求时附带的cookie信息。默认为None。
+
+    Returns:
+        dict: 返回解析后的JSON数据，若`with_response`为True，则返回元组(json, response)。
+
+    Raises:
+        无。
+
+    """
     json = {}
     response = None
     try:
@@ -418,24 +475,7 @@ def cookies2str(cookies):
     return str_cookie
 
 
-def get_urls(
-    html,
-    stop_urls=(
-        "javascript",
-        "+",
-        ".css",
-        ".js",
-        ".rar",
-        ".xls",
-        ".exe",
-        ".apk",
-        ".doc",
-        ".jpg",
-        ".png",
-        ".flv",
-        ".mp4",
-    ),
-):
+def get_urls(html,stop_urls=("javascript","+",".css",".js",".rar",".xls",".exe",".apk",".doc",".jpg",".png",".flv",".mp4",),):
     # 不匹配javascript、 +、 # 这样的url
     regex = r'<a.*?href.*?=.*?["|\'](.*?)["|\']'
 
@@ -623,10 +663,14 @@ def quote_url(url, encoding="utf-8"):
 
 
 def quote_chinese_word(text, encoding="utf-8"):
+    # 定义一个内部函数quote_chinese_word_func，用于处理匹配到的中文词汇
     def quote_chinese_word_func(text):
+        # 获取匹配到的中文词汇
         chinese_word = text.group(0)
+        # 使用urllib.parse.quote对中文词汇进行URL编码
         return urllib.parse.quote(chinese_word, encoding=encoding)
 
+    # 使用re.sub函数替换文本中的中文词汇为URL编码后的形式
     return re.sub("([\u4e00-\u9fa5]+)", quote_chinese_word_func, text, flags=re.S)
 
 
@@ -634,6 +678,7 @@ def unescape(str):
     """
     反转译
     """
+    # 调用html模块的unescape函数对字符串进行反转译
     return html.unescape(str)
 
 
@@ -1027,13 +1072,13 @@ def get_json_value(json_object, key):
     value = ""
     try:
         json_object = (
-            isinstance(json_object, str) and get_json(json_object) or json_object
+                isinstance(json_object, str) and get_json(json_object) or json_object
         )
 
         current_key = key.split(".")[0]
         value = json_object[current_key]
 
-        key = key[key.find(".") + 1 :]
+        key = key[key.find(".") + 1:]
     except Exception as e:
         return value
 
@@ -1452,7 +1497,7 @@ def get_date_number(year=None, month=None, day=None):
 
 
 def get_between_date(
-    begin_date, end_date=None, date_format="%Y-%m-%d", **time_interval
+        begin_date, end_date=None, date_format="%Y-%m-%d", **time_interval
 ):
     """
     @summary: 获取一段时间间隔内的日期，默认为每一天
@@ -1837,10 +1882,10 @@ def to_date(date_str, date_format="%Y-%m-%d %H:%M:%S"):
 
 
 def get_before_date(
-    current_date,
-    days,
-    current_date_format="%Y-%m-%d %H:%M:%S",
-    return_date_format="%Y-%m-%d %H:%M:%S",
+        current_date,
+        days,
+        current_date_format="%Y-%m-%d %H:%M:%S",
+        return_date_format="%Y-%m-%d %H:%M:%S",
 ):
     """
     @summary: 获取之前时间
@@ -1975,7 +2020,7 @@ def cut_string(text, length):
     """
 
     text_list = re.findall(".{%d}" % length, text, re.S)
-    leave_text = text[len(text_list) * length :]
+    leave_text = text[len(text_list) * length:]
     if leave_text:
         text_list.append(leave_text)
 
@@ -2004,9 +2049,9 @@ def get_random_password(length=8, special_characters=""):
             )
         )
         if (
-            re.search("[0-9]", random_password)
-            and re.search("[A-Z]", random_password)
-            and re.search("[a-z]", random_password)
+                re.search("[0-9]", random_password)
+                and re.search("[A-Z]", random_password)
+                and re.search("[a-z]", random_password)
         ):
             if not special_characters:
                 break
@@ -2107,7 +2152,7 @@ def list2str(datas):
 
 
 def make_insert_sql(
-    table, data, auto_update=False, update_columns=(), insert_ignore=False
+        table, data, auto_update=False, update_columns=(), insert_ignore=False
 ):
     """
     @summary: 适用于mysql， oracle数据库时间需要to_date 处理（TODO）
@@ -2134,8 +2179,8 @@ def make_insert_sql(
             ["{key}=values({key})".format(key=key) for key in update_columns]
         )
         sql = (
-            "insert%s into `{table}` {keys} values {values} on duplicate key update %s"
-            % (" ignore" if insert_ignore else "", update_columns_)
+                "insert%s into `{table}` {keys} values {values} on duplicate key update %s"
+                % (" ignore" if insert_ignore else "", update_columns_)
         )
 
     elif auto_update:
@@ -2178,7 +2223,7 @@ def make_update_sql(table, data, condition):
 
 
 def make_batch_sql(
-    table, datas, auto_update=False, update_columns=(), update_columns_value=()
+        table, datas, auto_update=False, update_columns=(), update_columns_value=()
 ):
     """
     @summary: 生产批量的sql
@@ -2467,14 +2512,14 @@ def reach_freq_limit(rate_limit, *key):
 
 
 def dingding_warning(
-    message,
-    *,
-    message_prefix=None,
-    rate_limit=None,
-    url=None,
-    user_phone=None,
-    user_id=None,
-    secret=None,
+        message,
+        *,
+        message_prefix=None,
+        rate_limit=None,
+        url=None,
+        user_phone=None,
+        user_id=None,
+        secret=None,
 ):
     """
     钉钉报警，user_phone与user_id 二选一即可
@@ -2546,14 +2591,14 @@ def dingding_warning(
 
 
 def email_warning(
-    message,
-    title,
-    message_prefix=None,
-    email_sender=None,
-    email_password=None,
-    email_receiver=None,
-    email_smtpserver=None,
-    rate_limit=None,
+        message,
+        title,
+        message_prefix=None,
+        email_sender=None,
+        email_password=None,
+        email_receiver=None,
+        email_smtpserver=None,
+        rate_limit=None,
 ):
     # 为了加载最新的配置
     email_sender = email_sender or setting.EMAIL_SENDER
@@ -2566,7 +2611,7 @@ def email_warning(
         return
 
     if reach_freq_limit(
-        rate_limit, email_receiver, email_sender, message_prefix or message
+            rate_limit, email_receiver, email_sender, message_prefix or message
     ):
         log.info("报警时间间隔过短，此次报警忽略。 内容 {}".format(message))
         return
@@ -2575,7 +2620,7 @@ def email_warning(
         email_receiver = [email_receiver]
 
     with EmailSender(
-        username=email_sender, password=email_password, smtpserver=email_smtpserver
+            username=email_sender, password=email_password, smtpserver=email_smtpserver
     ) as email:
         return email.send(receivers=email_receiver, title=title, content=message)
 
@@ -2610,12 +2655,12 @@ def linkedsee_warning(message, rate_limit=3600, message_prefix=None, token=None)
 
 
 def wechat_warning(
-    message,
-    message_prefix=None,
-    rate_limit=None,
-    url=None,
-    user_phone=None,
-    all_users: bool = None,
+        message,
+        message_prefix=None,
+        rate_limit=None,
+        url=None,
+        user_phone=None,
+        all_users: bool = None,
 ):
     """企业微信报警"""
 

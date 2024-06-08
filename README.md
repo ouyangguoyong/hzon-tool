@@ -35,7 +35,7 @@ file_name = get_random_file_name()
 
 
 ## Update log
-
+- `0.0.5` 添加mongo，redis,mysql处理逻辑
 - `0.0.4` 修改包的调用，变得更灵活，可以直接从主包中调用任意一个子包的方法
 - `0.0.3` 完善readme
 - `0.0.2` 封装feapder,小菜,和自己的mc包的项目
